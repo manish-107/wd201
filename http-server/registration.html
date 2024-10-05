@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex flex-col items-center justify-center mt-20 bg-gray-100">
+    <div class="container max-w-xl p-8 bg-white rounded-lg">
+        <h1 class="text-2xl font-bold text-center mb-6">
+            Registration Form
+        </h1>
+        <form id="formData" class="space-y-4">
+            <div class="flex gap-7">
+                <label for="name" class="block w-20 text-sm font-medium text-gray-700 mb-2">Name</label>
+                <input type="text" name="name" id="name" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="flex gap-7">
+                <label for="email" class="block w-20 text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input type="email" name="email" id="email" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="flex gap-7">
+                <label for="password" class="block w-20 text-sm font-medium text-gray-700 mb-2">Password</label>
+                <input type="password" name="password" id="password" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="flex gap-7">
+                <label for="dob" class="block text-sm w-20 font-medium text-gray-700 mb-2">Date of Birth</label>
+                <input type="date" name="dob" id="dob" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="flex items-center">
+                <input type="checkbox" name="terms" id="terms"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <label for="terms" class="ml-2 block text-sm text-gray-700">Accept Terms & Conditions</label>
+            </div>
+            <div class="flex flex-row space-x-4">
+                <button type="submit"
+                    class="w-full bg-green-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                    Submit
+                </button>
+                <a href="/"
+                    class="w-full bg-green-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                    Back to Home
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+
+    <!-- Updated Entries Section -->
+    <div
+        class="relative bg-white px-4 mt-5 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:rounded-lg sm:px-10">
+        <div class="mx-auto">
+            <h2 class="text-xl text-center font-bold leading-tight">Entries</h2>
+            <div class="divide-y divide-gray-300/50" id="user-entries"></div>
+        </div>
+    </div>
+
+    <!-- Link to external JavaScript file -->
+    <script>
+
+        // Set the minimum and maximum date of birth (between 18 and 55 years old)
+        const today = new Date();
+        const maxAge = 55;
+        const minAge = 18;
+
+        const mindate = new Date(
+            today.getFullYear() - maxAge,
+            today.getMonth(),
+            today.getDate()
+        );
+        const maxDate = new Date(
+            today.getFullYear() - minAge,
+            today.getMonth(),
+            today.getDate()
+        );
+
+        // Set the min and max attributes for the date input (DOB field)
+        const dobInput = document.getElementById("dob");
+        dobInput.min = mindate.toISOString().split("T")[0];
+        dobInput.max = maxDate.toISOString().split("T")[0];
+
+        // Retrieve entries from localStorage
+        const retieveEntries = () => {
+            let entries = localStorage.getItem("userEntries");
+            if (entries) {
+                entries = JSON.parse(entries);
+            } else {
+                entries = [];
+            }
+            return entries;
+        };
+
+        // Display entries in the table format
+        const displayEntries = () => {
+            let entries = retieveEntries();
+
+            const tableEntries = entries
+                .map((entry) => {
+                    const nameCell = `<td class='border px-4 py-2'>${entry.name}</td>`;
+                    const emailCell = `<td class='border px-4 py-2'>${entry.email}</td>`;
+                    const passwordCell = `<td class='border px-4 py-2'>${entry.password}</td>`;
+                    const dobCell = `<td class='border px-4 py-2'>${entry.dob}</td>`;
+                    const acceptTermsCell = `<td class='border px-4 py-2'>${entry.terms ? "true" : "false"
+                        }</td>`; // Shows true/false
+
+                    const row = `<tr>${nameCell}${emailCell}${passwordCell}${dobCell}${acceptTermsCell}</tr>`;
+                    return row;
+                })
+                .join("\n");
+
+            const table = `
+        <table class='table-auto w-full'>
+            <tr>
+                <th class='px-4 py-2'>Name</th>
+                <th class='px-4 py-2'>Email</th>
+                <th class='px-4 py-2'>Password</th>
+                <th class='px-4 py-2'>Dob</th>
+                <th class='px-4 py-2'>Accepted terms?</th>
+            </tr>
+            ${tableEntries}
+        </table>
+    `;
+
+            let details = document.getElementById("user-entries");
+            details.innerHTML = table;
+        };
+
+        // Handle form submission and display entries
+        const form = document.getElementById("formData");
+        let userEntries = JSON.parse(localStorage.getItem("userEntries")) || [];
+        form.addEventListener("submit", (e) => {
+            e.preventDefault(); // Prevent page reload
+            const formData = new FormData(form);
+            const dob = formData.get("dob");
+            const name = formData.get("name");
+            const email = formData.get("email");
+            const pass = formData.get("password");
+            const terms = formData.get("terms");
+            let termsBool = terms === "on" ? true : false;
+
+            let entry = {
+                name: name,
+                email: email,
+                password: pass,
+                dob: dob,
+                terms: termsBool,
+            };
+
+            userEntries.push(entry);
+            localStorage.setItem("userEntries", JSON.stringify(userEntries));
+            displayEntries(); // Update the table immediately
+            form.reset();
+        });
+
+        // Display the data on page load
+        displayEntries();
+
+    </script>
+</body>
+
+</html>
