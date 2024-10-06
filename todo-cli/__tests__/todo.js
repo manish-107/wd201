@@ -12,7 +12,7 @@ const {
 
 describe("Todolist Test suite", () => {
   beforeEach(() => {
-    all.length = 0; // Clear the list before each test
+    all.length = 0;
   });
 
   test("Should add new todo", () => {
