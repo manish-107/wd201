@@ -1,9 +1,11 @@
 /* eslint-disable no-undef */
 const todoList = () => {
   let all = [];
+
   const add = (todoItem) => {
     all.push(todoItem);
   };
+
   const markAsComplete = (index) => {
     all[index].completed = true;
   };
@@ -27,6 +29,7 @@ const todoList = () => {
   };
 
   const toDisplayableList = (list) => {
+    const today = new Date().toISOString().slice(0, 10);
     return list
       .map(
         (element) =>

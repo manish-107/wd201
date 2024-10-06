@@ -1,10 +1,18 @@
 const todoList = require("../todo.js");
 
-const { all, markAsComplete, add, overdue, dueToday, dueLater } = todoList();
+const {
+  all,
+  markAsComplete,
+  add,
+  overdue,
+  dueToday,
+  dueLater,
+  toDisplayableList,
+} = todoList();
 
 describe("Todolist Test suite", () => {
   beforeEach(() => {
-    all.length = 0;
+    all.length = 0; // Clear the list before each test
   });
 
   test("Should add new todo", () => {
@@ -43,29 +51,63 @@ describe("Todolist Test suite", () => {
     expect(overdueItems[0].title).toBe("overdue test todo");
   });
 
-  test("checks retrieval of due today items", () => {
+  test("retrieval of due today items", () => {
     add({
-      title: "due today items",
+      title: "due today item",
       completed: false,
       dueDate: new Date().toISOString().slice(0, 10),
     });
 
-    const dueTodayItem = dueToday();
-    expect(dueTodayItem.length).toBe(1);
-    expect(dueTodayItem[0].title).toBe("due today items");
+    const dueTodayItems = dueToday();
+    expect(dueTodayItems.length).toBe(1);
+    expect(dueTodayItems[0].title).toBe("due today item");
   });
 
-  test("checks retrieval of due later items", () => {
+  test("retrieval of due later items", () => {
     add({
-      title: "due later items",
+      title: "due later item",
       completed: false,
       dueDate: new Date(new Date().setDate(new Date().getDate() + 1))
         .toISOString()
         .slice(0, 10),
     });
 
-    const dueLaterItem = dueLater();
-    expect(dueLaterItem.length).toBe(1);
-    expect(dueLaterItem[0].title).toBe("due later items");
+    const dueLaterItems = dueLater();
+    expect(dueLaterItems.length).toBe(1);
+    expect(dueLaterItems[0].title).toBe("due later item");
+  });
+
+  test("toDisplayableList formats correctly", () => {
+    const today = new Date().toISOString().slice(0, 10);
+
+    add({
+      title: "overdue task",
+      completed: false,
+      dueDate: new Date(new Date().setDate(new Date().getDate() - 1))
+        .toISOString()
+        .slice(0, 10),
+    });
+
+    add({
+      title: "due today task",
+      completed: true,
+      dueDate: today,
+    });
+
+    add({
+      title: "due later task",
+      completed: false,
+      dueDate: new Date(new Date().setDate(new Date().getDate() + 1))
+        .toISOString()
+        .slice(0, 10),
+    });
+
+    const formattedList = toDisplayableList(all);
+
+    expect(formattedList).toBe(
+      `[ ] overdue task ${new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().slice(0, 10)}\n` +
+        `[x] due today task\n` +
+        `[ ] due later task ${new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10)}`,
+    );
   });
 });
