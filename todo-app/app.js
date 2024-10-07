@@ -66,14 +66,9 @@ app.delete("/todos/:id", async function (request, response) {
       },
     });
 
-    if (deletedTodo == 0) {
-      response.send(true);
-    } else {
-      response.send(false);
-    }
+    response.send(deletedTodo ? true : false);
   } catch (error) {
     console.log(error);
-    response.send(false);
   }
 });
 
