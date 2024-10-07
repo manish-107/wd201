@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-cd todo-app && npm test
-npx lint-staged
+# Navigate to todo-app and run tests, lint-staged
+cd "$(dirname -- "$0")/../../todo-app" && npm test || exit 1
 
+# Only run lint-staged after tests pass
+npx lint-staged
