@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Ensure we're in the todo-app directory
+cd "$(dirname "$0")/.."
+
+# Run npm test and lint-staged
 npm test
 npx lint-staged
