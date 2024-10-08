@@ -9,18 +9,10 @@
 </head>
 
 <body>
-    <h1>helloo bro</h1>
     <%- include('header.ejs') %>
-        <table>
-            <% for(var i=0;i < allTodoss.length;i++){ %>
-                <tr>
-                    <td>
-                        <%= allTodoss[i].title %>
-                    </td>
-                </tr>
-        </table>
+        <%- include('todos.ejs') %>
+            <%- include('footer.ejs') %>
 
-        <% } %>
 </body>
 
 </html>
